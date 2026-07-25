@@ -1,0 +1,36 @@
+{
+  "name": "institutes-platform",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Map-first educational marketplace & institute management platform (NestJS + Next.js + PostGIS)",
+  "workspaces": [
+    "apps/api",
+    "apps/web",
+    "packages/shared"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=@institutes/api & npm run dev --workspace=@institutes/web",
+    "dev:api": "npm run dev --workspace=@institutes/api",
+    "dev:web": "npm run dev --workspace=@institutes/web",
+    "build": "npm run build --workspace=@institutes/shared && npm run build --workspace=@institutes/api && npm run build --workspace=@institutes/web",
+    "build:api": "npm run build --workspace=@institutes/api",
+    "build:web": "npm run build --workspace=@institutes/web",
+    "test": "npm run test --workspace=@institutes/api",
+    "lint": "npm run lint --workspace=@institutes/api && npm run lint --workspace=@institutes/web",
+    "typecheck": "npm run typecheck --workspace=@institutes/api && npm run typecheck --workspace=@institutes/web",
+    "db:generate": "npm run db:generate --workspace=@institutes/api",
+    "db:migrate": "npm run db:migrate --workspace=@institutes/api",
+    "db:seed": "npm run db:seed --workspace=@institutes/api",
+    "infra:up": "docker compose up -d",
+    "infra:down": "docker compose down",
+    "bootstrap": "npm install && npm run build"
+  },
+  "engines": {
+    "node": ">=20.11.0",
+    "npm": ">=10.0.0"
+  },
+  "devDependencies": {
+    "prettier": "3.9.6",
+    "typescript": "5.9.3"
+  }
+}
