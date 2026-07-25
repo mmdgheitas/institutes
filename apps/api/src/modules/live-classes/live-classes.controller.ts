@@ -10,7 +10,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { UserRole } from '@institutes/shared';
+import { UserRole } from '../../packages/shared/src/index';
 import { Auth, CurrentUser, type AuthenticatedUser } from '../../common/decorators';
 import { LiveClassesService } from './live-classes.service';
 import { CreateLiveSessionDto } from './dto/live-session.dto';

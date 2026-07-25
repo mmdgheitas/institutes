@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { EnrollmentStatus, type EnrollmentRecord } from '@institutes/shared';
+import { EnrollmentStatus, type EnrollmentRecord } from '../../packages/shared/src/index';
 import { DatabaseService } from '../../db/database.service';
 import { InstituteAccessService } from '../institutes/institute-access.service';
 import type { AuthenticatedUser } from '../../common/decorators';

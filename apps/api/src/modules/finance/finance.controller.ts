@@ -13,7 +13,7 @@ import {
 import { ApiOperation, ApiPropertyOptional, ApiTags } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsEnum, IsNumber, IsOptional, IsString, Matches, MaxLength, Min } from 'class-validator';
-import { PayoutStatus, UserRole } from '@institutes/shared';
+import { PayoutStatus, UserRole } from '../../packages/shared/src/index';
 import { Auth, CurrentUser, type AuthenticatedUser } from '../../common/decorators';
 import { PaginationQueryDto } from '../../common/dto/pagination.dto';
 import { FinanceService } from './finance.service';

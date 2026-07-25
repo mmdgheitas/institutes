@@ -18,7 +18,7 @@ import {
   MinLength,
   ValidateNested,
 } from 'class-validator';
-import { QuestionType } from '@institutes/shared';
+import { QuestionType } from '../../../packages/shared/src/index';
 
 export class QuizOptionDto {
   @ApiPropertyOptional({ description: 'Stable id; generated when omitted' })

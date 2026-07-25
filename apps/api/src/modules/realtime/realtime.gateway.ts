@@ -11,7 +11,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import type { Server, Socket } from 'socket.io';
-import type { UserRole } from '@institutes/shared';
+import type { UserRole } from '../../packages/shared/src/index';
 import type { AppConfig } from '../../config/configuration';
 import { DatabaseService } from '../../db/database.service';
 

@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { randomBytes } from 'node:crypto';
-import { LiveClassProvider, UserRole, type LiveSessionInfo } from '@institutes/shared';
+import { LiveClassProvider, UserRole, type LiveSessionInfo } from '../../packages/shared/src/index';
 import { DatabaseService } from '../../db/database.service';
 import { InstituteAccessService } from '../institutes/institute-access.service';
 import { NotificationsService } from '../notifications/notifications.service';

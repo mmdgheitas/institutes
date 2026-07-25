@@ -12,7 +12,7 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
-import { MediaKind } from '@institutes/shared';
+import { MediaKind } from '../../../packages/shared/src/index';
 
 const PURPOSES = [
   'INSTITUTE_GALLERY',

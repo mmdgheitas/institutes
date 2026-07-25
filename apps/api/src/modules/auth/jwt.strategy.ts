@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import type { UserRole } from '@institutes/shared';
+import type { UserRole } from '../../packages/shared/src/index';
 import type { AppConfig } from '../../config/configuration';
 import { DatabaseService } from '../../db/database.service';
 import type { AuthenticatedUser } from '../../common/decorators';

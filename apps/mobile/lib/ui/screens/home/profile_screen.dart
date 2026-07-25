@@ -64,9 +64,9 @@ class ProfileScreen extends StatelessWidget {
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => _editProfile(context, user),
               ),
-              ListTile(
-                leading: const Icon(Icons.info_outline),
-                title: const Text('About'),
+              const ListTile(
+                leading: Icon(Icons.info_outline),
+                title: Text('About'),
                 subtitle: Text('Connected to ${AppConfig.apiBaseUrl}'),
               ),
               const Divider(),

@@ -199,21 +199,21 @@ void main() {
 
   group('whole-form validation and sanitization', () {
     final List<FormFieldSchema> schema = <FormFieldSchema>[
-      FormFieldSchema(
+      const FormFieldSchema(
         key: 'name',
         label: 'Name',
         type: FormFieldType.text,
         required: true,
         position: 0,
       ),
-      FormFieldSchema(
+      const FormFieldSchema(
         key: 'mobile',
         label: 'Mobile',
         type: FormFieldType.phone,
         required: true,
         position: 1,
       ),
-      FormFieldSchema(
+      const FormFieldSchema(
         key: 'mail',
         label: 'Email',
         type: FormFieldType.email,

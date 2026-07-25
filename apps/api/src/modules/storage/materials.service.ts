@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { MediaKind, type StudyMaterial } from '@institutes/shared';
+import { MediaKind, type StudyMaterial } from '../../packages/shared/src/index';
 import { DatabaseService } from '../../db/database.service';
 import { InstituteAccessService } from '../institutes/institute-access.service';
 import { StorageService } from './storage.service';

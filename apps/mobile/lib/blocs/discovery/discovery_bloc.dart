@@ -10,7 +10,6 @@ import 'package:stream_transform/stream_transform.dart';
 import '../../core/config/app_config.dart';
 import '../../core/map/marker_cluster.dart';
 import '../../core/network/api_exception.dart';
-import '../../data/models/enums.dart';
 import '../../data/models/institute.dart';
 import '../../data/repositories/discovery_repository.dart';
 

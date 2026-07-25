@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { UserRole } from '@institutes/shared';
+import { UserRole } from '../../packages/shared/src/index';
 import { IS_PUBLIC_KEY, ROLES_KEY, type AuthenticatedRequest } from '../decorators';
 
 /**

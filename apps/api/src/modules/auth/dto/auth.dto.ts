@@ -10,7 +10,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { UserRole, normalizeMobile } from '@institutes/shared';
+import { UserRole, normalizeMobile } from '../../../packages/shared/src/index';
 
 const MOBILE_REGEX = /^09\d{9}$/;
 const toMobile = ({ value }: { value: unknown }): unknown =>

@@ -13,7 +13,7 @@
     "outDir": "./dist",
     // Pinning rootDir keeps the emitted layout flat (dist/main.js). Without it
     // TypeScript infers the common root of every input file, and because the
-    // `@institutes/shared` path mapping reaches into ../../packages, that root
+    // `../../packages/shared/src/index` path mapping reaches into ../../packages, that root
     // becomes the monorepo root — which pushed the entry point down to
     // dist/apps/api/src/main.js and broke `npm start`.
     "rootDir": "./src",
@@ -34,10 +34,10 @@
     "noUnusedParameters": false,
     "resolveJsonModule": true,
     "moduleResolution": "node",
-    // No "paths" mapping on purpose. @institutes/shared resolves through the
+    // No "paths" mapping on purpose. ../../packages/shared/src/index resolves through the
     // npm-workspace symlink in node_modules to its built dist/, so the emitted
-    // JS keeps a bare `require("@institutes/shared")` and rootDir stays ./src.
-    // Run `npm run build --workspace=@institutes/shared` first (the root
+    // JS keeps a bare `require("../../packages/shared/src/index")` and rootDir stays ./src.
+    // Run `npm run build --workspace=../../packages/shared/src/index` first (the root
     // `npm run build` already does this).
     "types": ["node", "jest"]
   },

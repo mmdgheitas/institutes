@@ -12,7 +12,7 @@ import {
   type RevenuePoint,
   type WalletSummary,
   type WalletTransaction,
-} from '@institutes/shared';
+} from '../../packages/shared/src/index';
 import type { AppConfig } from '../../config/configuration';
 import { DatabaseService } from '../../db/database.service';
 import { InstituteAccessService } from '../institutes/institute-access.service';

@@ -24,7 +24,7 @@
     "infra:up": "docker compose up -d",
     "infra:down": "docker compose down",
     "bootstrap": "npm install && npm run build:shared",
-    "build:shared": "npm run build --workspace=@institutes/shared",
+    "build:shared": "npm run build --workspace=../../packages/shared/src/index",
     "start:api": "npm run build:api && node apps/api/dist/main.js"
   },
   "engines": {

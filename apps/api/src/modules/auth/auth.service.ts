@@ -15,7 +15,7 @@ import {
   validatePassword,
   type AuthResponse,
   type SessionUser,
-} from '@institutes/shared';
+} from '../../packages/shared/src/index';
 import type { AppConfig } from '../../config/configuration';
 import { DatabaseService } from '../../db/database.service';
 import { SmsService } from '../notifications/sms.service';

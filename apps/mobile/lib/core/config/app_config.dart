@@ -7,17 +7,17 @@ class AppConfig {
 
   /// Base URL of the NestJS API, including the global prefix.
   ///
-  /// 10.0.2.2 is the host loopback as seen from the Android emulator; use
+  /// localhost is the host loopback as seen from the Android emulator; use
   /// localhost for iOS simulator / desktop via --dart-define.
   static const String apiBaseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://10.0.2.2:4000/api/v1',
+    defaultValue: 'http://localhost:4000/api/v1',
   );
 
   /// Socket.IO endpoint (namespace is appended by the client).
   static const String realtimeUrl = String.fromEnvironment(
     'REALTIME_URL',
-    defaultValue: 'http://10.0.2.2:4000',
+    defaultValue: 'http://localhost:4000',
   );
 
   /// Raster tile template. Any XYZ provider works (OSM, Neshan, Mapbox raster).

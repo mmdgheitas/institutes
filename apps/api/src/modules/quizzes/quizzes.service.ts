@@ -16,7 +16,7 @@ import {
   type QuizResult,
   type QuizSummary,
   type QuizSyncResponse,
-} from '@institutes/shared';
+} from '../../packages/shared/src/index';
 import { DatabaseService } from '../../db/database.service';
 import { InstituteAccessService } from '../institutes/institute-access.service';
 import { NotificationsService } from '../notifications/notifications.service';

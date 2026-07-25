@@ -9,7 +9,7 @@ import {
   type MediaAsset,
   type Paginated,
   type ReviewItem,
-} from '@institutes/shared';
+} from '../../packages/shared/src/index';
 import { DatabaseService } from '../../db/database.service';
 import { paginate } from '../../common/dto/pagination.dto';
 import type { DiscoveryQueryDto, MapPinsQueryDto } from './dto/discovery.dto';

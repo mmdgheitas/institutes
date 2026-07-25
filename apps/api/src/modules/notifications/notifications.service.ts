@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../db/database.service';
 import { paginate } from '../../common/dto/pagination.dto';
-import type { Paginated } from '@institutes/shared';
+import type { Paginated } from '../../packages/shared/src/index';
 
 export interface NotificationItem {
   id: string;

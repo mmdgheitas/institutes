@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/config/app_config.dart';
 import '../../../core/network/api_exception.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../data/models/enums.dart';
 import '../../../data/models/institute.dart';
 import '../../../data/repositories/discovery_repository.dart';
 import '../../widgets/common.dart';

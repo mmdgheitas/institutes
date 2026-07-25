@@ -9,7 +9,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { UserRole } from '@institutes/shared';
+import { UserRole } from '../../packages/shared/src/index';
 import { Auth, CurrentUser, Public, type AuthenticatedUser } from '../../common/decorators';
 import { CoursesService } from './courses.service';
 import {

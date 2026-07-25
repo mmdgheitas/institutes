@@ -1,7 +1,7 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Patch, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
-import type { AuthResponse, SessionUser } from '@institutes/shared';
+import type { AuthResponse, SessionUser } from '../../packages/shared/src/index';
 import {
   Auth,
   ClientIp,

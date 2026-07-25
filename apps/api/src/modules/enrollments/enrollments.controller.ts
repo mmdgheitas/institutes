@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, ParseUUIDPipe, Patch } from '@nestjs/comm
 import { ApiOperation, ApiPropertyOptional, ApiTags } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsEnum, IsNumber, Max, Min } from 'class-validator';
-import { EnrollmentStatus, UserRole } from '@institutes/shared';
+import { EnrollmentStatus, UserRole } from '../../packages/shared/src/index';
 import { Auth, CurrentUser, type AuthenticatedUser } from '../../common/decorators';
 import { EnrollmentsService } from './enrollments.service';
 

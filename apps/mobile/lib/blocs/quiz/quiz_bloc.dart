@@ -7,7 +7,6 @@ import 'package:equatable/equatable.dart';
 import '../../core/config/app_config.dart';
 import '../../core/network/api_exception.dart';
 import '../../data/local/quiz_cache.dart';
-import '../../data/models/enums.dart';
 import '../../data/models/quiz.dart';
 import '../../data/repositories/quiz_repository.dart';
 

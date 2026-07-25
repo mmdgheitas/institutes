@@ -16,7 +16,7 @@ import {
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { randomUUID } from 'node:crypto';
 import { extname } from 'node:path';
-import { MediaKind, type PresignRequest, type PresignResponse } from '@institutes/shared';
+import { MediaKind, type PresignRequest, type PresignResponse } from '../../packages/shared/src/index';
 import type { AppConfig } from '../../config/configuration';
 import { DatabaseService } from '../../db/database.service';
 import { InstituteAccessService } from '../institutes/institute-access.service';

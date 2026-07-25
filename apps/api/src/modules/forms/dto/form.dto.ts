@@ -16,7 +16,7 @@ import {
   MinLength,
   ValidateNested,
 } from 'class-validator';
-import { FormFieldType, LeadStatus } from '@institutes/shared';
+import { FormFieldType, LeadStatus } from '../../../packages/shared/src/index';
 
 export class FormFieldOptionDto {
   @ApiProperty()

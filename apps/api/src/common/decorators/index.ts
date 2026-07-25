@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import type { Request } from 'express';
-import type { UserRole } from '@institutes/shared';
+import type { UserRole } from '../../packages/shared/src/index';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { RolesGuard } from '../guards/roles.guard';
 

@@ -1,5 +1,5 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { UserRole } from '@institutes/shared';
+import { UserRole } from '../../packages/shared/src/index';
 import { DatabaseService } from '../../db/database.service';
 import type { AuthenticatedUser } from '../../common/decorators';
 

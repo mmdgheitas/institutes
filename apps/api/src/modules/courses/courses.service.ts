@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import slugify from 'slugify';
-import type { CourseSummary } from '@institutes/shared';
+import type { CourseSummary } from '../../packages/shared/src/index';
 import { DatabaseService } from '../../db/database.service';
 import { InstituteAccessService } from '../institutes/institute-access.service';
 import type { AuthenticatedUser } from '../../common/decorators';

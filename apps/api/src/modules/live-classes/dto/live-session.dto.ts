@@ -8,7 +8,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { LiveClassProvider } from '@institutes/shared';
+import { LiveClassProvider } from '../../../packages/shared/src/index';
 
 export class CreateLiveSessionDto {
   @ApiProperty({ example: 'Unit 4 — Speaking practice' })

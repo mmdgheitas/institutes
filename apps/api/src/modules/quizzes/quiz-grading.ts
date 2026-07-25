@@ -5,7 +5,7 @@
  * manual grading and the "what would this score?" preview in the authoring UI
  * can never diverge.
  */
-import { QuestionType, type QuizAnswerValue } from '@institutes/shared';
+import { QuestionType, type QuizAnswerValue } from '../../packages/shared/src/index';
 
 export interface GradableQuestion {
   id: string;

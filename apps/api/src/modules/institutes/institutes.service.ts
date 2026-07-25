@@ -6,7 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import slugify from 'slugify';
-import { UserRole, VerificationStatus } from '@institutes/shared';
+import { UserRole, VerificationStatus } from '../../packages/shared/src/index';
 import { DatabaseService } from '../../db/database.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import type { AuthenticatedUser } from '../../common/decorators';

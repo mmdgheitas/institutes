@@ -18,7 +18,7 @@ import {
   Min,
   MinLength,
 } from 'class-validator';
-import { VerificationStatus } from '@institutes/shared';
+import { VerificationStatus } from '../../../packages/shared/src/index';
 
 export class CreateInstituteDto {
   @ApiProperty({ example: 'Pardis Language Academy' })
