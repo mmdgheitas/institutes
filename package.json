@@ -26,7 +26,9 @@
     "build:shared": "echo \"shared is compiled as part of the api build (apps/api/src/packages/shared)\"",
     "start:api": "npm run build:api && node apps/api/dist/main.js",
     "db:seed:fresh": "npm run db:seed:fresh --workspace=@institutes/api",
-    "db:setup": "npm run db:setup --workspace=@institutes/api"
+    "db:setup": "npm run db:setup --workspace=@institutes/api",
+    "db:migrate:down": "npm run db:migrate:down --workspace=@institutes/api",
+    "worker": "npm run worker --workspace=@institutes/api"
   },
   "engines": {
     "node": ">=20.11.0",

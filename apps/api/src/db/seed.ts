@@ -953,9 +953,10 @@ async function main(): Promise<void> {
     log('');
     log('Sign in with any of these (password below, or use the dev OTP):');
     log(`  super admin      09120000001`);
-    log(`  institute admin  0912100000  (…0000 … 0011, one per institute)`);
-    log(`  teacher          0912200000  (…0000 … 0012)`);
+    log(`  institute admin  09121000000 … 09121000011  (one per institute)`);
+    log(`  teacher          09122000000 … 09122000012`);
     log(`  student          09120000002  (Sara Ahmadi)`);
+    log(`  more students    09123000000 … 09123000029`);
     log(`  password         ${DEFAULT_PASSWORD}`);
     log('');
   } catch (error) {
