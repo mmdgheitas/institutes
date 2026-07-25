@@ -16,8 +16,8 @@ import { Client } from 'pg';
 
 const MIGRATIONS_DIR = join(__dirname, '..', '..', 'migrations');
 const DATABASE_URL =
-  process.env.DATABASE_URL ??
-  'postgresql://institutes:institutes@localhost:5432/institutes';
+  // process.env.DATABASE_URL ??
+  'postgresql://institutes:institutes@localhost:5433/institutes';
 
 interface MigrationFile {
   name: string;

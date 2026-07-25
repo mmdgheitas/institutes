@@ -32,8 +32,8 @@ import {
 } from './seed-data';
 
 const DATABASE_URL =
-  process.env.DATABASE_URL ??
-  'postgresql://institutes:institutes@localhost:5432/institutes';
+  // process.env.DATABASE_URL ??
+  'postgresql://postgres:1234@localhost:5433/institutes';
 
 /** bcrypt rounds — lowered for seeding so it does not take a minute. */
 const BCRYPT_ROUNDS = 10;
@@ -83,7 +83,7 @@ function assertNotProduction(): void {
   if (looksProd) {
     throw new Error(
       'Refusing to seed: DATABASE_URL or NODE_ENV looks like production. ' +
-        'Set ALLOW_PRODUCTION_SEED=true to override.',
+      'Set ALLOW_PRODUCTION_SEED=true to override.',
     );
   }
 }
@@ -479,10 +479,12 @@ async function main(): Promise<void> {
           const { rowCount } = await db.query(
             `INSERT INTO timetable_entries
                (course_id, classroom_id, day_of_week, start_time, end_time)
-             SELECT $1,$2,$3,$4,$5
+             SELECT $1::uuid,$2::uuid,$3::smallint,$4::varchar,$5::varchar
               WHERE NOT EXISTS (
                 SELECT 1 FROM timetable_entries
-                 WHERE course_id = $1 AND day_of_week = $3 AND start_time = $4
+                 WHERE course_id = $1::uuid
+                   AND day_of_week = $3::smallint
+                   AND start_time = $4::varchar
               )`,
             [
               courseId,
@@ -552,9 +554,9 @@ async function main(): Promise<void> {
           inst.freePreRegistration, // requires_contract
           inst.freePreRegistration
             ? `By submitting this form you agree to ${inst.name}'s enrolment terms: `
-              + 'places are confirmed only after the assessment interview, fees are '
-              + 'refundable up to 7 days before the course start date, and your '
-              + 'personal data is processed solely for admissions purposes.'
+            + 'places are confirmed only after the assessment interview, fees are '
+            + 'refundable up to 7 days before the course start date, and your '
+            + 'personal data is processed solely for admissions purposes.'
             : null,
           false, // requires_otp — keeps local sign-up friction-free
           JSON.stringify(fields),
@@ -578,10 +580,10 @@ async function main(): Promise<void> {
           const { rowCount } = await db.query(
             `INSERT INTO time_slots
                (institute_id, starts_at, ends_at, capacity, booked_count, status, location)
-             SELECT $1,$2,$3,2,0,'AVAILABLE',$4
+             SELECT $1::uuid,$2::timestamptz,$3::timestamptz,2,0,'AVAILABLE',$4::text
               WHERE NOT EXISTS (
                 SELECT 1 FROM time_slots
-                 WHERE institute_id = $1 AND starts_at = $2
+                 WHERE institute_id = $1::uuid AND starts_at = $2::timestamptz
               )`,
             [instituteId, startsAt, endsAt, 'Main reception'],
           );
@@ -718,21 +720,21 @@ async function main(): Promise<void> {
           enrollmentCount += enrolled ?? 0;
 
           if ((enrolled ?? 0) > 0) {
-            await db.query(
-              `INSERT INTO wallet_transactions
-                 (institute_id, amount, type, description, reference_id)
-               VALUES
-                 ($1,$2,'ENROLLMENT_REVENUE',$3,$4),
-                 ($1,$5,'PLATFORM_COMMISSION',$6,$4)`,
-              [
-                instituteId,
-                gross,
-                `Enrollment: ${course.title}`,
-                submissionId,
-                -commission,
-                `Platform commission (${inst.commissionPercent}%)`,
-              ],
-            );
+            // await db.query(
+            //   `INSERT INTO wallet_transactions
+            //      (institute_id, amount, type, description, reference_id)
+            //    VALUES
+            //      ($1,$2,'ENROLLMENT_REVENUE',$3,$4),
+            //      ($1,$5,'PLATFORM_COMMISSION',$6,$4)`,
+            //   [
+            //     instituteId,
+            //     gross,
+            //     `Enrollment: ${course.title}`,
+            //     submissionId,
+            //     -commission,
+            //     `Platform commission (${inst.commissionPercent}%)`,
+            //   ],
+            // );
           }
         }
       }
@@ -860,9 +862,10 @@ async function main(): Promise<void> {
         const { rowCount } = await db.query(
           `INSERT INTO live_sessions
              (course_id, provider, title, starts_at, ends_at, external_room_id)
-           SELECT $1,'BIG_BLUE_BUTTON',$2,$3,$4,$5
+           SELECT $1::uuid,'BIG_BLUE_BUTTON',$2::text,$3::timestamptz,$4::timestamptz,$5::text
             WHERE NOT EXISTS (
-              SELECT 1 FROM live_sessions WHERE course_id = $1 AND starts_at = $3
+              SELECT 1 FROM live_sessions
+               WHERE course_id = $1::uuid AND starts_at = $3::timestamptz
             )`,
           [
             courseId,
