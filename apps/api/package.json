@@ -16,11 +16,13 @@
     "db:generate": "echo \"no codegen required (Kysely types are hand-written in src/db/schema.ts)\"",
     "db:migrate": "ts-node --transpile-only src/db/migrate.ts up",
     "db:reset": "ts-node --transpile-only src/db/migrate.ts reset",
-    "db:seed": "echo \"Seed script not implemented yet (src/db/seed.ts).\" && exit 1",
+    "db:seed": "ts-node --transpile-only src/db/seed.ts",
     "worker": "node dist/worker.js",
     "worker:dev": "ts-node --transpile-only src/worker.ts",
     "db:migrate:down": "ts-node --transpile-only src/db/migrate.ts down",
-    "prestart": "npm run build"
+    "prestart": "npm run build",
+    "db:seed:fresh": "ts-node --transpile-only src/db/seed.ts --fresh",
+    "db:setup": "npm run db:migrate && npm run db:seed"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.1095.0",
