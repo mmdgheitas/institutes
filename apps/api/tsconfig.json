@@ -1,0 +1,46 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": false,
+    "removeComments": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "target": "ES2022",
+    "lib": ["ES2023"],
+    "sourceMap": true,
+    "outDir": "./dist",
+    // Pinning rootDir keeps the emitted layout flat (dist/main.js). Without it
+    // TypeScript infers the common root of every input file, and because the
+    // `../../packages/shared/src/index` path mapping reaches into ../../packages, that root
+    // becomes the monorepo root — which pushed the entry point down to
+    // dist/apps/api/src/main.js and broke `npm start`.
+    "rootDir": "./src",
+    "baseUrl": "./",
+    // `incremental` is deliberately OFF. Combined with nest-cli's
+    // deleteOutDir, a stale tsconfig.tsbuildinfo makes tsc think everything is
+    // up to date after dist/ was wiped, so it exits 0 while emitting nothing
+    // and `npm start` then fails with "Cannot find module dist/main.js".
+    "incremental": false,
+    "skipLibCheck": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "strictBindCallApply": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    // No "paths" mapping on purpose. ../../packages/shared/src/index resolves through the
+    // npm-workspace symlink in node_modules to its built dist/, so the emitted
+    // JS keeps a bare `require("../../packages/shared/src/index")` and rootDir stays ./src.
+    // Run `npm run build --workspace=../../packages/shared/src/index` first (the root
+    // `npm run build` already does this).
+    "types": ["node", "jest"]
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist", "test"]
+}

@@ -1,0 +1,67 @@
+name: institutes_app
+description: Map-first educational marketplace client (students, teachers, institute staff).
+publish_to: "none"
+version: 1.0.0+1
+
+# Requires a reasonably recent stable Flutter. The theme code uses the
+# normalized component themes (CardThemeData / AppBarThemeData /
+# InputDecorationThemeData) introduced in Flutter 3.35.
+environment:
+  sdk: ">=3.6.0 <4.0.0"
+  flutter: ">=3.35.0"
+
+# Caret ranges are used deliberately rather than exact pins: this project was
+# authored without network access to pub.dev, so letting the resolver pick
+# compatible patch/minor versions is far more likely to resolve on your
+# machine. Run `flutter pub get` (or `flutter pub upgrade`) to produce a
+# pubspec.lock, and commit that lock file for reproducible builds.
+#
+# No build_runner / codegen anywhere: all JSON is hand-written and Hive stores
+# plain JSON strings, so `flutter pub get && flutter run` is all that is needed.
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State management
+  flutter_bloc: ^8.1.6
+  bloc: ^8.1.4
+  equatable: ^2.0.5
+  # debounce/switchMap for bloc event transformers
+  stream_transform: ^2.1.0
+
+  # Navigation
+  go_router: ^14.0.0
+
+  # Networking
+  dio: ^5.7.0
+
+  # Maps — pure Dart, no API key or native configuration required
+  flutter_map: ^7.0.0
+  latlong2: ^0.9.1
+
+  # Location
+  geolocator: ^13.0.0
+
+  # Local storage (offline exam state + secure tokens)
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  flutter_secure_storage: ^9.2.2
+
+  # Connectivity — drives offline quiz sync
+  connectivity_plus: ^6.0.5
+
+  # UI / media
+  cached_network_image: ^3.4.1
+  url_launcher: ^6.3.0
+  file_picker: ^8.1.2
+
+  # Formatting
+  intl: ^0.19.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
