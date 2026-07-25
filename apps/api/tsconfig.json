@@ -11,8 +11,18 @@
     "lib": ["ES2023"],
     "sourceMap": true,
     "outDir": "./dist",
+    // Pinning rootDir keeps the emitted layout flat (dist/main.js). Without it
+    // TypeScript infers the common root of every input file, and because the
+    // `@institutes/shared` path mapping reaches into ../../packages, that root
+    // becomes the monorepo root — which pushed the entry point down to
+    // dist/apps/api/src/main.js and broke `npm start`.
+    "rootDir": "./src",
     "baseUrl": "./",
-    "incremental": true,
+    // `incremental` is deliberately OFF. Combined with nest-cli's
+    // deleteOutDir, a stale tsconfig.tsbuildinfo makes tsc think everything is
+    // up to date after dist/ was wiped, so it exits 0 while emitting nothing
+    // and `npm start` then fails with "Cannot find module dist/main.js".
+    "incremental": false,
     "skipLibCheck": true,
     "strict": true,
     "strictNullChecks": true,
@@ -24,11 +34,13 @@
     "noUnusedParameters": false,
     "resolveJsonModule": true,
     "moduleResolution": "node",
-    "paths": {
-      "@institutes/shared": ["../../packages/shared/src/index.ts"],
-      "@institutes/shared/*": ["../../packages/shared/src/*"]
-    }
+    // No "paths" mapping on purpose. @institutes/shared resolves through the
+    // npm-workspace symlink in node_modules to its built dist/, so the emitted
+    // JS keeps a bare `require("@institutes/shared")` and rootDir stays ./src.
+    // Run `npm run build --workspace=@institutes/shared` first (the root
+    // `npm run build` already does this).
+    "types": ["node", "jest"]
   },
-  "include": ["src/**/*.ts", "test/**/*.ts", "migrations/**/*.ts"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist", "test"]
 }

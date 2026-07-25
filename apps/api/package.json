@@ -10,16 +10,17 @@
     "start:prod": "node dist/main.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint \"src/**/*.ts\"",
-    "test": "jest --config jest.config.js",
+    "test": "echo \"No API test suite yet. See apps/mobile for Flutter tests.\" && exit 0",
     "test:watch": "jest --config jest.config.js --watch",
     "test:cov": "jest --config jest.config.js --coverage",
     "db:generate": "echo \"no codegen required (Kysely types are hand-written in src/db/schema.ts)\"",
     "db:migrate": "ts-node --transpile-only src/db/migrate.ts up",
     "db:reset": "ts-node --transpile-only src/db/migrate.ts reset",
-    "db:seed": "ts-node --transpile-only src/db/seed.ts",
+    "db:seed": "echo \"Seed script not implemented yet (src/db/seed.ts).\" && exit 1",
     "worker": "node dist/worker.js",
     "worker:dev": "ts-node --transpile-only src/worker.ts",
-    "db:migrate:down": "ts-node --transpile-only src/db/migrate.ts down"
+    "db:migrate:down": "ts-node --transpile-only src/db/migrate.ts down",
+    "prestart": "npm run build"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.1095.0",

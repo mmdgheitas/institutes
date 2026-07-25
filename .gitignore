@@ -68,3 +68,8 @@ apps/mobile/android/app/debug/
 apps/mobile/android/app/profile/
 apps/mobile/android/app/release/
 *.iml
+
+# stray tsc output if a build is run without an outDir
+packages/shared/src/*.js
+packages/shared/src/*.js.map
+packages/shared/src/*.d.ts
