@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import {LogOut, ShieldCheck, RefreshCcw} from 'lucide-react';
+import { LogOut, ShieldCheck, RefreshCcw, Pencil } from 'lucide-react';
 import { useSession } from '@/stores/session';
 import { auth } from '@/lib/api/endpoints';
 import { getRefreshToken, clearTokens } from '@/lib/auth/tokens';
@@ -10,16 +10,57 @@ import { disconnectSocket } from '@/lib/realtime/socket';
 import { useQueryClient } from '@tanstack/react-query';
 import { Dropdown } from '@/components/ui/Dropdown';
 import { Avatar } from '@/components/ui/Avatar';
+import { Modal, ConfirmDialog } from '@/components/ui/Modal';
+import { Input } from '@/components/ui/Field';
+import { Button } from '@/components/ui/Button';
 import { USER_ROLE_FA } from '@/lib/constants';
-import { ConfirmDialog } from '@/components/ui/Modal';
+import { validateEmail } from '@/lib/validation';
+import { toastSuccess, toastError, errorMessage } from '@/stores/toasts';
 
 export function ProfileMenu() {
-  const { user, clear } = useSession();
+  const { user, clear, setUser } = useSession();
   const router = useRouter();
   const queryClient = useQueryClient();
   const [logoutAllOpen, setLogoutAllOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [editForm, setEditForm] = useState({ fullName: '', email: '' });
+  const [editErrors, setEditErrors] = useState<Record<string, string>>({});
+  const [saving, setSaving] = useState(false);
 
   if (!user) return null;
+
+  const openEdit = () => {
+    setEditForm({ fullName: user.fullName, email: user.email ?? '' });
+    setEditErrors({});
+    setEditOpen(true);
+  };
+
+  const saveProfile = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const nextErrors: Record<string, string> = {};
+    if (editForm.fullName.trim().length < 2) nextErrors.fullName = 'نام کامل حداقل ۲ کاراکتر است';
+    if (editForm.email.trim()) {
+      const emailError = validateEmail(editForm.email.trim());
+      if (emailError) nextErrors.email = emailError;
+    }
+    setEditErrors(nextErrors);
+    if (Object.keys(nextErrors).length > 0) return;
+
+    setSaving(true);
+    try {
+      const updated = await auth.updateMe({
+        fullName: editForm.fullName.trim(),
+        email: editForm.email.trim() || undefined,
+      });
+      setUser(updated);
+      toastSuccess('پروفایل به‌روزرسانی شد');
+      setEditOpen(false);
+    } catch (error) {
+      toastError('خطا در ذخیره پروفایل', errorMessage(error));
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const logout = async () => {
     const refresh = getRefreshToken();
@@ -74,6 +115,16 @@ export function ProfileMenu() {
           },
           { id: 'div1', label: '', divider: true, disabled: true },
           {
+            id: 'edit',
+            label: (
+              <span className="inline-flex items-center gap-2">
+                <Pencil className="h-4 w-4" />
+                ویرایش پروفایل
+              </span>
+            ),
+            onSelect: openEdit,
+          },
+          {
             id: 'logout',
             label: (
               <span className="inline-flex items-center gap-2">
@@ -97,6 +148,37 @@ export function ProfileMenu() {
           },
         ]}
       />
+
+      {/* Profile editor */}
+      <Modal open={editOpen} onClose={() => setEditOpen(false)} title="ویرایش پروفایل" size="sm">
+        <form onSubmit={saveProfile} className="flex flex-col gap-4">
+          <Input
+            label="نام و نام خانوادگی"
+            required
+            autoFocus
+            value={editForm.fullName}
+            error={editErrors.fullName}
+            onChange={(e) => setEditForm({ ...editForm, fullName: e.target.value })}
+          />
+          <Input
+            label="ایمیل"
+            latin
+            type="email"
+            value={editForm.email}
+            error={editErrors.email}
+            onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+            placeholder="example@mail.com"
+          />
+          <div className="flex justify-end gap-2 border-t border-slate-100 pt-4">
+            <Button type="button" variant="outline" onClick={() => setEditOpen(false)}>
+              انصراف
+            </Button>
+            <Button type="submit" loading={saving}>
+              ذخیره
+            </Button>
+          </div>
+        </form>
+      </Modal>
 
       <ConfirmDialog
         open={logoutAllOpen}

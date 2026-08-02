@@ -40,6 +40,11 @@ timetable, form builder, lead CRM Kanban, quiz authoring & grading, live
 classes, materials, reviews, finance), and `TEACHER` gets their courses and
 LMS tooling. Students are pointed to the mobile app.
 
+New institute admins can **create an account** from the login page
+(«ساخت حساب») and then **register their institute** (`/institute/new`, with a
+map picker for the location) — the whole management toolset unlocks
+immediately after.
+
 Check it came up:
 
 ```bash
@@ -217,7 +222,8 @@ persisting. Change one, change the other —
   `http://localhost:4000`). In dev, `/api/*` rewrites to the API as well.
 - The console is **RTL Persian** end-to-end: Vazirmatn (bundled locally),
   Jalali dates, Persian digits and IRR formatting. Status colours match the
-  mobile app's theme tokens.
+  mobile app's theme tokens. It is intentionally not indexed by search
+  engines (private staff console).
 - Access tokens live in memory and rotate silently via `/auth/refresh`; a
   single in-flight refresh serves any number of concurrent 401s.
 - Uploads never pass through the API: presign → direct S3/MinIO PUT → confirm.

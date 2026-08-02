@@ -6,14 +6,13 @@ import { Users } from 'lucide-react';
 import { enrollments } from '@/lib/api/endpoints';
 import { Card, CardBody } from '@/components/ui/Card';
 import { Badge, hexToTone } from '@/components/ui/Badge';
-
 import { EmptyState, ErrorState } from '@/components/ui/States';
 import { SkeletonRows } from '@/components/ui/Skeleton';
 import { Select } from '@/components/ui/Field';
 import { ProgressBar } from '@/components/ui/Misc';
 import { Avatar } from '@/components/ui/Avatar';
 import { ENROLLMENT_STATUS_FA, ENROLLMENT_COLORS } from '@/lib/constants';
-import { formatJalaliShort, formatNumber } from '@/lib/format';
+import { formatJalaliShort } from '@/lib/format';
 import { toastSuccess, toastError, errorMessage } from '@/stores/toasts';
 import type { EnrollmentStatus } from '@shared/enums';
 
@@ -35,6 +34,25 @@ export function CourseEnrollmentsTab({ courseId }: { courseId: string }) {
     },
     onError: (error) => toastError('خطا در تغییر وضعیت', errorMessage(error)),
   });
+
+  const progressMutation = useMutation({
+    mutationFn: ({ id, progressPercent }: { id: string; progressPercent: number }) =>
+      enrollments.updateProgress(id, progressPercent),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['enrollments', courseId] });
+    },
+    onError: (error) => toastError('خطا در ثبت پیشرفت', errorMessage(error)),
+  });
+
+  const saveProgress = (id: string, value: string) => {
+    const percent = Number(value);
+    if (Number.isNaN(percent) || percent < 0 || percent > 100) {
+      toastError('مقدار پیشرفت باید بین ۰ تا ۱۰۰ باشد');
+      queryClient.invalidateQueries({ queryKey: ['enrollments', courseId] });
+      return;
+    }
+    progressMutation.mutate({ id, progressPercent: percent });
+  };
 
   const filtered = rows?.filter((row) => !statusFilter || row.status === statusFilter);
 
@@ -75,8 +93,21 @@ export function CourseEnrollmentsTab({ courseId }: { courseId: string }) {
                     <span dir="ltr">{row.phone}</span> · ثبت‌نام: {formatJalaliShort(row.enrolled_at)}
                   </p>
                   <div className="mt-2 flex items-center gap-2">
-                    <ProgressBar value={row.progress_percent} className="max-w-40" />
-                    <span className="text-[11px] text-slate-500">{formatNumber(row.progress_percent)}٪ پیشرفت</span>
+                    <ProgressBar value={row.progress_percent} className="max-w-36" />
+                    <input
+                      type="number"
+                      min={0}
+                      max={100}
+                      defaultValue={row.progress_percent}
+                      onBlur={(e) => saveProgress(row.id, e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') (e.currentTarget as HTMLInputElement).blur();
+                      }}
+                      className="w-16 rounded-lg border border-slate-300 px-2 py-1 text-end text-xs focus:border-primary-600 focus:outline-none"
+                      aria-label="درصد پیشرفت"
+                      dir="ltr"
+                    />
+                    <span className="text-[11px] text-slate-500">٪ پیشرفت</span>
                   </div>
                 </div>
                 <Badge tone={hexToTone(ENROLLMENT_COLORS[row.status as EnrollmentStatus])} dot={ENROLLMENT_COLORS[row.status as EnrollmentStatus]}>

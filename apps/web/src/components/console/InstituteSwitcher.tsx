@@ -1,7 +1,8 @@
 'use client';
 
+import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
-import { Building2, Check } from 'lucide-react';
+import { Building2, Check, Plus } from 'lucide-react';
 import { institutes as institutesApi } from '@/lib/api/endpoints';
 import { useActiveInstitute } from '@/stores/activeInstitute';
 import { useSession } from '@/stores/session';
@@ -30,9 +31,13 @@ export function InstituteSwitcher() {
 
   if (!institutes || institutes.length === 0) {
     return (
-      <p className="text-sm font-medium text-amber-600">
-        به هیچ آموزشگاهی متصل نیستید. لطفاً با مدیر سامانه تماس بگیرید.
-      </p>
+      <Link
+        href="/institute/new"
+        className="inline-flex items-center gap-1.5 rounded-lg border border-dashed border-primary-400 bg-primary-50 px-3 py-1.5 text-sm font-semibold text-primary-700 transition-colors hover:bg-primary-100"
+      >
+        <Plus className="h-4 w-4" />
+        ثبت آموزشگاه جدید
+      </Link>
     );
   }
 

@@ -98,7 +98,10 @@ function ProfileForm({ institute }: { institute: InstituteRow }) {
       longitude: location.lng,
       skills: form.skills.split(/[،,]/).map((s) => s.trim()).filter(Boolean),
       amenities: form.amenities.split(/[،,]/).map((s) => s.trim()).filter(Boolean),
-      workingHours: form.workingHours,
+      // Only send days that actually have a range; drop 'closed' placeholders.
+      workingHours: Object.fromEntries(
+        Object.entries(form.workingHours).filter(([, hours]) => hours && hours !== 'closed' && hours.trim()),
+      ),
       freePreRegistration: form.freePreRegistration,
       categoryIds: categoryIds.length > 0 ? categoryIds : undefined,
     });
@@ -166,39 +169,21 @@ function ProfileForm({ institute }: { institute: InstituteRow }) {
             label="پیش‌ثبت‌نام رایگان"
           />
           <div className="border-t border-slate-100 pt-4">
-            <p className="mb-2 text-sm font-semibold text-slate-700">ساعات کاری روزانه (قالب 09:00-18:00)</p>
+            <p className="mb-2 text-sm font-semibold text-slate-700">ساعات کاری روزانه (قالب 09:00-18:00 — روزهای خالی بسته هستند)</p>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {Object.keys(form.workingHours).length === 0 &&
-                ['0', '1', '2', '3', '4', '5', '6'].map((day) => (
-                  <div key={day} className="flex items-center gap-2">
-                    <span className="w-24 text-xs text-slate-500">{['یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه', 'شنبه'][Number(day)]}</span>
-                    <Input
-                      latin
-                      placeholder="09:00-18:00"
-                      defaultValue=""
-                      onChange={(e) =>
-                        setForm({
-                          ...form,
-                          workingHours: {
-                            ...form.workingHours,
-                            [day]: e.target.value || 'closed',
-                          },
-                        })
-                      }
-                    />
-                  </div>
-                ))}
-              {Object.entries(form.workingHours).map(([day, hours]) => (
+              {['0', '1', '2', '3', '4', '5', '6'].map((day) => (
                 <div key={day} className="flex items-center gap-2">
-                  <span className="w-24 text-xs text-slate-500">{['یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه', 'شنبه'][Number(day)]}</span>
+                  <span className="w-24 shrink-0 text-xs text-slate-500">
+                    {['یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه', 'شنبه'][Number(day)]}
+                  </span>
                   <Input
                     latin
-                    value={hours === 'closed' ? '' : hours}
                     placeholder="09:00-18:00"
+                    value={form.workingHours[day] && form.workingHours[day] !== 'closed' ? form.workingHours[day] : ''}
                     onChange={(e) =>
                       setForm({
                         ...form,
-                        workingHours: { ...form.workingHours, [day]: e.target.value || 'closed' },
+                        workingHours: { ...form.workingHours, [day]: e.target.value },
                       })
                     }
                   />

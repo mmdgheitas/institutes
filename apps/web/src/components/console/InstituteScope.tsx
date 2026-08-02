@@ -1,13 +1,15 @@
 'use client';
 
 import { useEffect } from 'react';
+import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
-import { Building2 } from 'lucide-react';
+import { Building2, Plus } from 'lucide-react';
 import { institutes as institutesApi } from '@/lib/api/endpoints';
 import { useActiveInstitute } from '@/stores/activeInstitute';
 import { useSession } from '@/stores/session';
 import { EmptyState } from '@/components/ui/States';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { Button } from '@/components/ui/Button';
 
 /**
  * Wraps institute-scoped content: resolves the active institute and renders a
@@ -49,11 +51,27 @@ export function InstituteScope({ children }: { children: React.ReactNode }) {
   if (!instituteId) {
     return (
       <div className="rounded-card border border-slate-200 bg-white">
-        <EmptyState
-          icon={<Building2 className="h-7 w-7" />}
-          title="آموزشگاهی انتخاب نشده است"
-          description="از منوی بالای صفحه، آموزشگاهی را برای مدیریت انتخاب کنید."
-        />
+        {user?.role === 'INSTITUTE_ADMIN' ? (
+          <EmptyState
+            icon={<Building2 className="h-7 w-7" />}
+            title="هنوز آموزشگاهی ثبت نکرده‌اید"
+            description="با ثبت آموزشگاه خود، همه ابزارهای مدیریت (دوره‌ها، CRM، آزمون‌ها و مالی) فعال می‌شوند."
+            action={
+              <Link href="/institute/new">
+                <Button size="sm">
+                  <Plus className="h-4 w-4" />
+                  ثبت آموزشگاه جدید
+                </Button>
+              </Link>
+            }
+          />
+        ) : (
+          <EmptyState
+            icon={<Building2 className="h-7 w-7" />}
+            title="آموزشگاهی انتخاب نشده است"
+            description="از منوی بالای صفحه، آموزشگاهی را برای مدیریت انتخاب کنید."
+          />
+        )}
       </div>
     );
   }

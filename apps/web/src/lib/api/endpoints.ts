@@ -100,7 +100,7 @@ export const institutes = {
   manage: (id: string) => apiGet<InstituteRow>(`/institutes/${id}/manage`),
   update: (id: string, body: Record<string, unknown>) =>
     apiPatch<InstituteRow>(`/institutes/${id}`, body),
-  create: (body: Record<string, unknown>) => apiPost(`/institutes`, body),
+  create: (body: Record<string, unknown>) => apiPost<InstituteRow>(`/institutes`, body),
   verificationDocs: (id: string) => apiGet<VerificationDoc[]>(`/institutes/${id}/verification`),
   submitVerification: (id: string, body: { mediaId: string; docType: string }) =>
     apiPost(`/institutes/${id}/verification`, body),

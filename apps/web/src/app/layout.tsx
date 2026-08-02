@@ -21,6 +21,8 @@ export const metadata: Metadata = {
     template: '%s | سامانه مدیریت آموزشگاه‌ها',
   },
   description: 'پنل مدیریت آموزشگاه‌ها و سامانه‌ی سراسری',
+  // Private staff console — never index it.
+  robots: { index: false, follow: false },
 };
 
 export const viewport: Viewport = {

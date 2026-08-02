@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import {GraduationCap, Phone, ShieldCheck, Loader2, MessageSquareText} from 'lucide-react';
+import { GraduationCap, Phone, ShieldCheck, Loader2, MessageSquareText, UserPlus } from 'lucide-react';
 import { useSession } from '@/stores/session';
 import { errorMessage } from '@/stores/toasts';
 import { auth } from '@/lib/api/endpoints';
-import { validateOtp, validatePassword, validatePhone } from '@/lib/validation';
+import { validateOtp, validatePassword, validatePhone, validateEmail } from '@/lib/validation';
 import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Field';
+import { Input, Select } from '@/components/ui/Field';
 import { Tabs } from '@/components/ui/Tabs';
 import { toPersianDigits } from '@/lib/format';
 
@@ -21,6 +21,15 @@ export default function LoginPage() {
   const [otpRequested, setOtpRequested] = useState(false);
   const [otpSentMessage, setOtpSentMessage] = useState<string | null>(null);
   const [devCode, setDevCode] = useState<string | null>(null);
+
+  // Registration form state.
+  const [registerForm, setRegisterForm] = useState({
+    fullName: '',
+    phone: '',
+    email: '',
+    password: '',
+    role: 'INSTITUTE_ADMIN',
+  });
 
   // Already signed in → go to the console.
   useEffect(() => {
@@ -86,6 +95,40 @@ export default function LoginPage() {
       const response = await auth.verifyOtp({ phone: phone.replace(/[\s-]/g, ''), code });
       applyAuth(response.accessToken, response.refreshToken, response.user);
       router.replace(response.user.role === 'STUDENT' ? '/student' : '/');
+    } catch (error) {
+      setErrors({ form: errorMessage(error) });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const register = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const nextErrors: Record<string, string> = {};
+    if (registerForm.fullName.trim().length < 2) nextErrors.fullName = 'نام کامل حداقل ۲ کاراکتر است';
+    const phoneError = validatePhone(registerForm.phone);
+    if (phoneError) nextErrors.phone = phoneError;
+    const passwordError = validatePassword(registerForm.password);
+    if (passwordError) nextErrors.password = passwordError;
+    if (registerForm.email) {
+      const emailError = validateEmail(registerForm.email);
+      if (emailError) nextErrors.email = emailError;
+    }
+    setErrors(nextErrors);
+    if (Object.keys(nextErrors).length > 0) return;
+
+    setSubmitting(true);
+    try {
+      const response = await auth.register({
+        phone: registerForm.phone.replace(/[\s-]/g, ''),
+        fullName: registerForm.fullName.trim(),
+        password: registerForm.password,
+        email: registerForm.email.trim() || undefined,
+        role: registerForm.role,
+      });
+      applyAuth(response.accessToken, response.refreshToken, response.user);
+      // Institute admins land on institute registration; students go to the app notice.
+      router.replace(response.user.role === 'INSTITUTE_ADMIN' ? '/institute/new' : '/student');
     } catch (error) {
       setErrors({ form: errorMessage(error) });
     } finally {
@@ -225,6 +268,70 @@ export default function LoginPage() {
                         </button>
                       </>
                     )}
+                  </form>
+                ),
+              },
+              {
+                id: 'register',
+                label: (
+                  <span className="inline-flex items-center gap-1.5">
+                    <UserPlus className="h-4 w-4" />
+                    ساخت حساب
+                  </span>
+                ),
+                content: (
+                  <form onSubmit={register} className="flex flex-col gap-4">
+                    <Input
+                      label="نام و نام خانوادگی"
+                      value={registerForm.fullName}
+                      error={errors.fullName}
+                      onChange={(e) => setRegisterForm({ ...registerForm, fullName: e.target.value })}
+                      required
+                      autoComplete="name"
+                    />
+                    <Input
+                      label="شماره موبایل"
+                      latin
+                      placeholder="09121234567"
+                      value={registerForm.phone}
+                      error={errors.phone}
+                      onChange={(e) => setRegisterForm({ ...registerForm, phone: e.target.value })}
+                      required
+                      autoComplete="username"
+                    />
+                    <Input
+                      label="ایمیل (اختیاری)"
+                      latin
+                      type="email"
+                      value={registerForm.email}
+                      error={errors.email}
+                      onChange={(e) => setRegisterForm({ ...registerForm, email: e.target.value })}
+                      autoComplete="email"
+                    />
+                    <Input
+                      label="رمز عبور (حداقل ۸ کاراکتر)"
+                      latin
+                      type="password"
+                      value={registerForm.password}
+                      error={errors.password}
+                      onChange={(e) => setRegisterForm({ ...registerForm, password: e.target.value })}
+                      required
+                      autoComplete="new-password"
+                    />
+                    <Select
+                      label="نوع حساب"
+                      value={registerForm.role}
+                      onChange={(e) => setRegisterForm({ ...registerForm, role: e.target.value })}
+                    >
+                      <option value="INSTITUTE_ADMIN">مدیر آموزشگاه</option>
+                      <option value="STUDENT">دانش‌آموز (اپلیکیشن موبایل)</option>
+                    </Select>
+                    {errors.form && (
+                      <p className="rounded-lg bg-danger-50 px-3 py-2 text-xs text-danger-600">{errors.form}</p>
+                    )}
+                    <Button type="submit" size="lg" loading={submitting}>
+                      ساخت حساب
+                    </Button>
                   </form>
                 ),
               },

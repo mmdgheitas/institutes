@@ -1,8 +1,8 @@
 'use client';
 
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
-import { FileQuestion, Plus, ClipboardCheck } from 'lucide-react';
+import { FileQuestion, Plus, ClipboardCheck, ChevronLeft } from 'lucide-react';
 import { quizzes as quizzesApi } from '@/lib/api/endpoints';
 import { Card, CardBody } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
@@ -12,6 +12,8 @@ import { SkeletonRows } from '@/components/ui/Skeleton';
 import { formatNumber } from '@/lib/format';
 
 export function CourseQuizzesTab({ courseId }: { courseId: string }) {
+  const router = useRouter();
+
   const { data: quizzes, isLoading, isError, refetch } = useQuery({
     queryKey: ['quizzes', 'list', courseId],
     queryFn: () => quizzesApi.list(courseId),
@@ -27,12 +29,10 @@ export function CourseQuizzesTab({ courseId }: { courseId: string }) {
   return (
     <div>
       <div className="mb-4 flex justify-end">
-        <Link href={`/institute/courses/${courseId}/quizzes/new`}>
-          <Button size="sm">
-            <Plus className="h-4 w-4" />
-            آزمون جدید
-          </Button>
-        </Link>
+        <Button size="sm" onClick={() => router.push(`/institute/courses/${courseId}/quizzes/new`)}>
+          <Plus className="h-4 w-4" />
+          آزمون جدید
+        </Button>
       </div>
 
       {isLoading ? (
@@ -46,12 +46,10 @@ export function CourseQuizzesTab({ courseId }: { courseId: string }) {
             title="آزمونی برای این دوره نیست"
             description="آزمون آنلاین با تصحیح خودکار و حالت آفلاین بسازید."
             action={
-              <Link href={`/institute/courses/${courseId}/quizzes/new`}>
-                <Button size="sm">
-                  <Plus className="h-4 w-4" />
-                  ساخت آزمون
-                </Button>
-              </Link>
+              <Button size="sm" onClick={() => router.push(`/institute/courses/${courseId}/quizzes/new`)}>
+                <Plus className="h-4 w-4" />
+                ساخت آزمون
+              </Button>
             }
           />
         </Card>
@@ -60,33 +58,42 @@ export function CourseQuizzesTab({ courseId }: { courseId: string }) {
           {quizzes.map((quiz) => {
             const state = isOpen(quiz);
             return (
-              <Link key={quiz.id} href={`/institute/quizzes/${quiz.id}`}>
-                <Card className="cursor-pointer transition-shadow hover:shadow-pop">
-                  <CardBody className="flex flex-wrap items-center gap-3">
-                    <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <p className="text-sm font-bold text-slate-900">{quiz.title}</p>
-                        <Badge
-                          tone={!quiz.isPublished ? 'slate' : state === 'open' ? 'green' : state === 'scheduled' ? 'amber' : 'red'}
-                        >
-                          {!quiz.isPublished ? 'پیش‌نویس' : state === 'open' ? 'فعال' : state === 'scheduled' ? 'برنامه‌ریزی شده' : 'بسته شده'}
-                        </Badge>
-                      </div>
-                      <p className="mt-1 text-xs text-slate-500">
-                        {formatNumber(quiz.questionCount)} سؤال · {formatNumber(quiz.maxScore)} نمره · حداقل قبولی{' '}
-                        {formatNumber(quiz.passingScore)} · {formatNumber(quiz.timeLimitSeconds / 60)} دقیقه
-                      </p>
+              <Card
+                key={quiz.id}
+                className="cursor-pointer transition-shadow hover:shadow-pop"
+              >
+                <CardBody className="flex flex-wrap items-center gap-3" onClick={() => router.push(`/institute/quizzes/${quiz.id}`)}>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="text-sm font-bold text-slate-900">{quiz.title}</p>
+                      <Badge
+                        tone={!quiz.isPublished ? 'slate' : state === 'open' ? 'green' : state === 'scheduled' ? 'amber' : 'red'}
+                      >
+                        {!quiz.isPublished ? 'پیش‌نویس' : state === 'open' ? 'فعال' : state === 'scheduled' ? 'برنامه‌ریزی شده' : 'بسته شده'}
+                      </Badge>
                     </div>
-                    <div className="flex items-center gap-2">
-                      {quiz.antiCheatEnabled && <Badge tone="cyan">ضد تقلب</Badge>}
-                      <Link href={`/institute/quizzes/${quiz.id}/attempts`} className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-primary-700 hover:bg-primary-50">
-                        <ClipboardCheck className="h-4 w-4" />
-                        پاسخ‌ها
-                      </Link>
-                    </div>
-                  </CardBody>
-                </Card>
-              </Link>
+                    <p className="mt-1 text-xs text-slate-500">
+                      {formatNumber(quiz.questionCount)} سؤال · {formatNumber(quiz.maxScore)} نمره · حداقل قبولی{' '}
+                      {formatNumber(quiz.passingScore)} · {formatNumber(quiz.timeLimitSeconds / 60)} دقیقه
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {quiz.antiCheatEnabled && <Badge tone="cyan">ضد تقلب</Badge>}
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        router.push(`/institute/quizzes/${quiz.id}/attempts`);
+                      }}
+                    >
+                      <ClipboardCheck className="h-4 w-4" />
+                      پاسخ‌ها
+                    </Button>
+                    <ChevronLeft className="h-4 w-4 text-slate-300" />
+                  </div>
+                </CardBody>
+              </Card>
             );
           })}
         </div>
