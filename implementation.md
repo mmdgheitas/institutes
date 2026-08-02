@@ -366,3 +366,30 @@ All sections of this plan were implemented in `apps/web`:
    §12 as recommended).
 5. Open questions from §12 were resolved as recommended: local Vazirmatn,
    OpenStreetMap tiles, full teacher tooling, student notice page.
+
+### 14. Completion pass (final)
+
+Following the loop-bug fix, a full completion audit closed every remaining
+gap between the web app and the API surface:
+
+- **Onboarding**: «ساخت حساب» (register) tab on the login page
+  (`/auth/register`, INSTITUTE_ADMIN or STUDENT), and a complete
+  **`/institute/new`** registration page (name/address/categories/skills/
+  amenities, Leaflet map picker, working hours, pre-registration toggle).
+  Institute admins with no institute now see «ثبت آموزشگاه جدید» CTAs in the
+  switcher and on every scoped page, and land on `/institute/new` right after
+  registering.
+- **Profile editing**: profile menu now opens an editor (PATCH `/auth/me`).
+- **Enrollment progress**: editable per-student progress (PATCH
+  `/enrollments/:id/progress`) on the course roster tab.
+- **Navigation**: «بازههای زمانی» (slots) was built but never linked — added
+  to the sidebar.
+- **Bug fixes**: nested `<a>` inside `<a>` in the quizzes list (invalid HTML,
+  React warning); working-hours saves no longer persist `'closed'`
+  placeholders; lint/type errors cleaned.
+- **Production hardening**: `robots: noindex` for the private console,
+  `apps/web/.env.example` documenting `NEXT_PUBLIC_API_BASE_URL` / `API_TARGET`.
+
+**Final verification:** typecheck ✅ · eslint 0 problems ✅ · 60/60 tests ✅ ·
+`next build` 26 routes ✅ · every page smoke-tested over HTTP (200) ✅ ·
+route audit 0 unmatched ✅.
