@@ -42,6 +42,13 @@ export class InstitutesController {
     return this.institutes.listMine(user);
   }
 
+  @Auth(UserRole.SUPER_ADMIN)
+  @Get('admin/all')
+  @ApiOperation({ summary: 'All institutes including drafts (super admin)' })
+  adminAll() {
+    return this.institutes.listAllForAdmin();
+  }
+
   @Auth(UserRole.INSTITUTE_ADMIN)
   @Get(':id/manage')
   @ApiOperation({ summary: 'Full institute record for the dashboard' })

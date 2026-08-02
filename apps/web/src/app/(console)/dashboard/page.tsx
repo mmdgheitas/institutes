@@ -1,6 +1,6 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Users,
   GraduationCap,
@@ -12,15 +12,19 @@ import {
   UserPlus,
   Percent,
   Activity,
+  AlertTriangle,
+  Globe,
 } from 'lucide-react';
 import { crm, courses, finance, institutes as institutesApi, liveClasses } from '@/lib/api/endpoints';
 import { useSession } from '@/stores/session';
 import { useActiveInstitute } from '@/stores/activeInstitute';
 import { Card, CardBody, CardHeader } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { ErrorState, EmptyState } from '@/components/ui/States';
-import {formatIRRCompact, formatNumber, formatPercent} from '@/lib/format';
+import { formatIRRCompact, formatNumber, formatPercent } from '@/lib/format';
 import { RevenueChart } from '@/components/finance/RevenueChart';
+import { toastSuccess, toastError, errorMessage } from '@/stores/toasts';
 
 import { Badge } from '@/components/ui/Badge';
 import Link from 'next/link';
@@ -91,6 +95,22 @@ export default function DashboardPage() {
     enabled: user?.role === 'INSTITUTE_ADMIN',
   });
 
+  const queryClient = useQueryClient();
+
+  const publishMutation = useMutation({
+    mutationFn: () => institutesApi.update(instituteId!, { isPublished: true }),
+    onSuccess: () => {
+      toastSuccess('آموزشگاه منتشر شد', 'اکنون در نقشه و نتایج جستجو برای دانش‌آموزان نمایش داده می‌شود.');
+      queryClient.invalidateQueries({ queryKey: ['institutes', 'mine'] });
+      queryClient.invalidateQueries({ queryKey: ['institutes', 'manage', instituteId] });
+      queryClient.invalidateQueries({ queryKey: ['discovery'] });
+    },
+    onError: (error) => toastError('انتشار انجام نشد', errorMessage(error)),
+  });
+
+  // The active institute's row (may be a draft — not yet visible to students).
+  const activeInstitute = mine.data?.find((i) => i.id === instituteId) ?? mine.data?.[0];
+
   // Super admin console
   if (user?.role === 'SUPER_ADMIN') {
     return (
@@ -151,9 +171,28 @@ export default function DashboardPage() {
       <div>
         <h1 className="text-xl font-bold text-slate-900">داشبورد آموزشگاه</h1>
         <p className="mt-1 text-sm text-slate-500">
-          {mine.data?.[0]?.name ?? 'نمای کلی عملکرد آموزشگاه شما'}
+          {activeInstitute?.name ?? mine.data?.[0]?.name ?? 'نمای کلی عملکرد آموزشگاه شما'}
         </p>
       </div>
+
+      {activeInstitute && !activeInstitute.is_published && (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-card border border-amber-200 bg-amber-50 px-5 py-4">
+          <div className="flex items-start gap-3">
+            <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
+            <div>
+              <p className="text-sm font-bold text-amber-800">آموزشگاه شما هنوز منتشر نشده است</p>
+              <p className="mt-0.5 text-xs leading-5 text-amber-700">
+                تا زمان انتشار، دانش‌آموزان این آموزشگاه را روی نقشه و در نتایج جستجو نمی‌بینند —
+                حتی اگر مدارک تأیید شده باشد. با یک کلیک منتشر کنید.
+              </p>
+            </div>
+          </div>
+          <Button size="sm" loading={publishMutation.isPending} onClick={() => publishMutation.mutate()}>
+            <Globe className="h-4 w-4" />
+            انتشار آموزشگاه
+          </Button>
+        </div>
+      )}
 
       {!instituteId ? (
         <Card>

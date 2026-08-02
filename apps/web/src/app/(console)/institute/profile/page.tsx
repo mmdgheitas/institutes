@@ -36,6 +36,7 @@ function ProfileForm({ institute }: { institute: InstituteRow }) {
     amenities: institute.amenities.join('، '),
     workingHours: institute.working_hours ?? {},
     freePreRegistration: institute.free_pre_registration,
+    isPublished: institute.is_published,
   });
   const [location, setLocation] = useState<LatLngValue>({
     lat: institute.latitude,
@@ -103,6 +104,7 @@ function ProfileForm({ institute }: { institute: InstituteRow }) {
         Object.entries(form.workingHours).filter(([, hours]) => hours && hours !== 'closed' && hours.trim()),
       ),
       freePreRegistration: form.freePreRegistration,
+      isPublished: form.isPublished,
       categoryIds: categoryIds.length > 0 ? categoryIds : undefined,
     });
   };
@@ -163,6 +165,20 @@ function ProfileForm({ institute }: { institute: InstituteRow }) {
       <Card>
         <CardHeader title="سایر تنظیمات" />
         <CardBody className="flex flex-col gap-4">
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-200 bg-slate-50/60 p-4">
+            <div className="min-w-0">
+              <p className="text-sm font-bold text-slate-800">انتشار آموزشگاه</p>
+              <p className="mt-0.5 text-xs leading-5 text-slate-500">
+                تا زمانی که منتشر نشده، آموزشگاه در نقشه، نتایج جستجو و ویترین برای دانش‌آموزان
+                نمایش داده نمی‌شود. وضعیت تأیید مدارک مستقل از انتشار است.
+              </p>
+            </div>
+            <Switch
+              checked={form.isPublished}
+              onChange={(v) => setForm({ ...form, isPublished: v })}
+              label={form.isPublished ? 'منتشر شده' : 'پیش‌نویس'}
+            />
+          </div>
           <Switch
             checked={form.freePreRegistration}
             onChange={(v) => setForm({ ...form, freePreRegistration: v })}

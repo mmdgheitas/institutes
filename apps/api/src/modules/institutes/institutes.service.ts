@@ -176,6 +176,15 @@ export class InstitutesService {
       .execute();
   }
 
+  /** Every institute — including drafts — for the super-admin directory. */
+  async listAllForAdmin() {
+    return this.database.db
+      .selectFrom('institutes')
+      .selectAll()
+      .orderBy('created_at', 'desc')
+      .execute();
+  }
+
   async getManaged(user: AuthenticatedUser, instituteId: string) {
     await this.access.assertCanManage(user, instituteId);
     const institute = await this.database.db

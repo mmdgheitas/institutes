@@ -34,6 +34,7 @@ export default function NewInstitutePage() {
     skills: '',
     amenities: '',
     freePreRegistration: true,
+    isPublished: false,
   });
   const [location, setLocation] = useState<LatLngValue>({ lat: 35.7219, lng: 51.3347 });
   const [categoryIds, setCategoryIds] = useState<string[]>([]);
@@ -64,6 +65,7 @@ export default function NewInstitutePage() {
         categoryIds: categoryIds.length > 0 ? categoryIds : undefined,
         workingHours: Object.fromEntries(Object.entries(workingHours).filter(([, v]) => v.trim())),
         freePreRegistration: form.freePreRegistration,
+        isPublished: form.isPublished,
       }),
     onSuccess: (institute) => {
       toastSuccess('آموزشگاه با موفقیت ثبت شد', 'حالا می‌توانید دوره‌ها و فرم‌ها را بسازید.');
@@ -162,8 +164,22 @@ export default function NewInstitutePage() {
           </Card>
 
           <Card>
-            <CardHeader title="پیش‌ثبت‌نام" />
-            <CardBody>
+            <CardHeader title="انتشار و پیش‌ثبت‌نام" />
+            <CardBody className="flex flex-col gap-4">
+              <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-200 bg-slate-50/60 p-4">
+                <div className="min-w-0">
+                  <p className="text-sm font-bold text-slate-800">انتشار فوری آموزشگاه</p>
+                  <p className="mt-0.5 text-xs leading-5 text-slate-500">
+                    در حالت پیش‌نویس، آموزشگاه برای دانش‌آموزان نمایش داده نمی‌شود. می‌توانید بعداً از
+                    صفحه «مشخصات آموزشگاه» نیز منتشر کنید.
+                  </p>
+                </div>
+                <Switch
+                  checked={form.isPublished}
+                  onChange={(v) => setForm({ ...form, isPublished: v })}
+                  label={form.isPublished ? 'منتشر شده' : 'پیش‌نویس'}
+                />
+              </div>
               <Switch
                 checked={form.freePreRegistration}
                 onChange={(v) => setForm({ ...form, freePreRegistration: v })}

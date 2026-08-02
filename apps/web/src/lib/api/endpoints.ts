@@ -97,6 +97,7 @@ export const discovery = {
 
 export const institutes = {
   mine: () => apiGet<InstituteRow[]>('/institutes/mine'),
+  adminAll: () => apiGet<InstituteRow[]>('/institutes/admin/all'),
   manage: (id: string) => apiGet<InstituteRow>(`/institutes/${id}/manage`),
   update: (id: string, body: Record<string, unknown>) =>
     apiPatch<InstituteRow>(`/institutes/${id}`, body),
