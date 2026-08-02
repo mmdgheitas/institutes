@@ -384,6 +384,7 @@ export class DiscoveryService {
           startDate: c.start_date ? c.start_date.toISOString() : null,
           sessions: Array.isArray(c.schedule) ? c.schedule : [],
           instructorIds: c.instructor_ids ?? [],
+          isPublished: true, // storefront only lists published courses
         };
       }),
       reviews: reviewItems,

@@ -175,6 +175,8 @@ export interface CourseSummary {
   startDate: string | null;
   sessions: CourseSession[];
   instructorIds: string[];
+  /** Whether the course is visible to students (draft when false). */
+  isPublished: boolean;
 }
 
 export interface ReviewItem {

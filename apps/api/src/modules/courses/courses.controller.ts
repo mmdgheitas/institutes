@@ -52,6 +52,13 @@ export class CoursesController {
     return this.courses.listForInstitute(user, instituteId);
   }
 
+  @Auth(UserRole.INSTITUTE_ADMIN, UserRole.TEACHER)
+  @Get('me/courses')
+  @ApiOperation({ summary: 'Courses the current user teaches or administers' })
+  listMine(@CurrentUser() user: AuthenticatedUser) {
+    return this.courses.listMine(user);
+  }
+
   @Auth(UserRole.INSTITUTE_ADMIN)
   @Patch('courses/:id')
   @ApiOperation({ summary: 'Update a course' })

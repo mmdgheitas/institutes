@@ -193,6 +193,30 @@ export class CoursesService {
     return rows.map((row) => this.toSummary(row));
   }
 
+  /**
+   * Courses the current user is involved with: courses they teach (linked via
+   * an instructor profile) or courses of institutes they belong to. This is
+   * the entry point for the teacher dashboard.
+   */
+  async listMine(user: AuthenticatedUser) {
+    const rows = await this.database.db
+      .selectFrom('courses as c')
+      .leftJoin('course_instructors as ci', 'ci.course_id', 'c.id')
+      .leftJoin('instructors as i', 'i.id', 'ci.instructor_id')
+      .leftJoin('institute_members as m', 'm.institute_id', 'c.institute_id')
+      .where((eb) =>
+        eb.or([
+          eb('i.user_id', '=', user.id),
+          eb('m.user_id', '=', user.id),
+        ]),
+      )
+      .groupBy('c.id')
+      .selectAll('c')
+      .orderBy('c.created_at', 'desc')
+      .execute();
+    return rows.map((row) => this.toSummary(row));
+  }
+
   async getPublic(courseId: string): Promise<CourseSummary & { description: string | null }> {
     const course = await this.database.db
       .selectFrom('courses')
@@ -355,6 +379,7 @@ export class CoursesService {
     enrolled_count: number;
     start_date: Date | null;
     schedule: unknown;
+    is_published: boolean;
   }): CourseSummary {
     const price = Number(course.price);
     return {
@@ -376,6 +401,7 @@ export class CoursesService {
         ? (course.schedule as CourseSummary['sessions'])
         : [],
       instructorIds: [],
+      isPublished: course.is_published,
     };
   }
 

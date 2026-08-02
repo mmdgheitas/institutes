@@ -8,7 +8,7 @@ working when the connection drops.
 | --- | --- | --- |
 | `apps/api` | NestJS · PostgreSQL + PostGIS · Kysely · BullMQ | Working — 99 routes |
 | `apps/mobile` | Flutter · Bloc · flutter_map · Hive | Written, not yet compiled |
-| `apps/web` | Next.js staff/admin console | Not started (`package.json` only) |
+| `apps/web` | Next.js RTL Persian admin console | Working — builds, typechecks, 57 unit tests |
 
 ---
 
@@ -25,6 +25,20 @@ npm run db:migrate        # create the schema
 npm run db:seed           # load demo data
 npm run start:api         # http://localhost:4000/api/v1
 ```
+
+Then the web console:
+
+```bash
+npm run dev:web          # http://localhost:3000
+```
+
+Sign in with the seeded accounts (every password is `Password123`); the
+console routes by role: `SUPER_ADMIN` gets the platform console (verification
+queue, payout processing, institute directory), `INSTITUTE_ADMIN` gets the
+full institute dashboard (profile + map picker, media, instructors, courses,
+timetable, form builder, lead CRM Kanban, quiz authoring & grading, live
+classes, materials, reviews, finance), and `TEACHER` gets their courses and
+LMS tooling. Students are pointed to the mobile app.
 
 Check it came up:
 
@@ -122,6 +136,7 @@ Run from the repository root.
 | `npm run db:migrate:down` | Roll back the last migration |
 | `npm run db:seed` / `db:seed:fresh` | Load demo data |
 | `npm run db:setup` | Migrate + seed |
+| `npm run dev:web` / `build:web` | Run/build the web console |
 | `npm run infra:up` / `infra:down` | Start/stop containers |
 
 In `apps/api`, `npm run worker` runs the FFmpeg transcoding worker (needs
@@ -147,8 +162,13 @@ apps/
 │   │   ├── data/              models, repositories, Hive cache
 │   │   └── ui/                screens and widgets
 │   └── test/                  validator + clustering suites
-└── web/                       not started
+└── web/                       Next.js 15 console (RTL Persian, React Query, Tailwind)
+    ├── src/app/               27 routes — super-admin + institute + teacher areas
+    ├── src/lib/api/            typed client with silent token refresh
+    ├── src/components/         ui primitives + feature components
+    └── test/                   vitest suites (format, validation, Kanban, client)
 tools/dart_sanity_check.py     structural checks for the Flutter code
+tools/audit-web-routes.mjs      verifies every web client URL exists in the API
 ```
 
 ---
@@ -191,6 +211,23 @@ persisting. Change one, change the other —
 
 ---
 
+## Web console notes
+
+- Point it at a different API with `NEXT_PUBLIC_API_BASE_URL` (default
+  `http://localhost:4000`). In dev, `/api/*` rewrites to the API as well.
+- The console is **RTL Persian** end-to-end: Vazirmatn (bundled locally),
+  Jalali dates, Persian digits and IRR formatting. Status colours match the
+  mobile app's theme tokens.
+- Access tokens live in memory and rotate silently via `/auth/refresh`; a
+  single in-flight refresh serves any number of concurrent 401s.
+- Uploads never pass through the API: presign → direct S3/MinIO PUT → confirm.
+- The Kanban enforces the same lead transitions as the server
+  (`LEAD_TRANSITIONS`), and moving a lead to `ENROLLED` warns that the
+  enrollment plus wallet entries are created atomically.
+- Two small additive API additions were made while building the console:
+  `GET /me/courses` (courses the current teacher/admin is involved with) and
+  `isPublished` on course summaries (the read model previously hid it).
+
 ## Troubleshooting
 
 **`Cannot find module dist/main.js`** — the build produced nothing. Clear the
@@ -214,12 +251,13 @@ first.
 
 ## Status
 
-**Working:** the API builds, boots and maps 99 routes; schema, migrations and
-seed are in place.
+**Working:** the API builds, boots and maps 100 routes; schema, migrations and
+seed are in place. The web console builds (`next build`), typechecks, lints
+clean and ships 57 unit tests across formatting, validation parity, Kanban
+transitions and the token-refresh client.
 
 **Not done yet:**
 
-- `apps/web` staff/admin console
 - API test suite (`npm test` is currently a placeholder)
 - Flutter: `FILE_UPLOAD` quiz answers and the Socket.IO client are unwired
 
