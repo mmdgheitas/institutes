@@ -37,9 +37,17 @@ export const useSession = create<SessionState>((set) => ({
   },
 
   hydrate: () => {
-    const user = getCachedUser();
     const hasRefresh = Boolean(getRefreshToken());
-    set({ user, hydrated: true });
+    // Idempotent: set only once. Re-setting on every call creates a fresh
+    // `user` object reference (JSON.parse), which re-renders subscribers and
+    // re-triggers effects depending on `user` — an endless render loop
+    // ("Maximum update depth exceeded"). Returning the same state reference
+    // makes zustand skip its listeners entirely.
+    set((state) => {
+      if (state.hydrated) return state;
+      const user = getCachedUser();
+      return { user, hydrated: true, restoring: false };
+    });
     return hasRefresh;
   },
 

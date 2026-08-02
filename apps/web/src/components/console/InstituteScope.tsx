@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Building2 } from 'lucide-react';
 import { institutes as institutesApi } from '@/lib/api/endpoints';
@@ -22,15 +23,18 @@ export function InstituteScope({ children }: { children: React.ReactNode }) {
     enabled: user?.role === 'INSTITUTE_ADMIN',
   });
 
+  // Auto-select the first institute once the list arrives (in an effect —
+  // setting store state during render can trigger update loops).
+  useEffect(() => {
+    if (user?.role === 'INSTITUTE_ADMIN' && !instituteId && institutes && institutes.length > 0) {
+      setInstituteId(institutes[0].id);
+    }
+  }, [user?.role, instituteId, institutes, setInstituteId]);
+
   // Teachers use the same pages but reach courses through /me/courses — no
   // institute selection required (their role has no institute-switcher UI).
   if (user?.role === 'TEACHER') {
     return <>{children}</>;
-  }
-
-  // Auto-select the first institute when the admin hasn't chosen one yet.
-  if (user?.role === 'INSTITUTE_ADMIN' && !instituteId && institutes && institutes.length > 0) {
-    setInstituteId(institutes[0].id);
   }
 
   if (user?.role === 'INSTITUTE_ADMIN' && isLoading) {
