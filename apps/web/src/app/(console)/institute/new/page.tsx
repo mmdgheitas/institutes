@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Save, MapPin } from 'lucide-react';
 import { institutes as institutesApi, discovery } from '@/lib/api/endpoints';
-import { AuthGate } from '@/components/console/AuthGate';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Card, CardBody, CardHeader } from '@/components/ui/Card';
 import { Input, Textarea, Select } from '@/components/ui/Field';
@@ -91,12 +90,11 @@ export default function NewInstitutePage() {
   };
 
   return (
-    <AuthGate>
-      <div className="mx-auto max-w-4xl">
-        <PageHeader
-          title="ثبت آموزشگاه جدید"
-          description="اطلاعات آموزشگاه را وارد کنید تا روی نقشه و ویترین نمایش داده شود. پس از ثبت، باید مدارک تأیید هویت را بارگذاری کنید."
-        />
+    <div className="mx-auto max-w-4xl">
+      <PageHeader
+        title="ثبت آموزشگاه جدید"
+        description="اطلاعات آموزشگاه را وارد کنید تا روی نقشه و ویترین نمایش داده شود. پس از ثبت، باید مدارک تأیید هویت را بارگذاری کنید."
+      />
 
         <form onSubmit={submit} className="flex flex-col gap-5">
           <Card>
@@ -181,7 +179,6 @@ export default function NewInstitutePage() {
             </Button>
           </div>
         </form>
-      </div>
-    </AuthGate>
+    </div>
   );
 }

@@ -41,7 +41,7 @@ async function parseError(response: Response): Promise<ApiErrorBody | null> {
   }
 }
 
-interface RequestOptions extends Omit<RequestInit, 'body'> {
+export interface RequestOptions extends Omit<RequestInit, 'body'> {
   body?: unknown;
 }
 
@@ -127,9 +127,11 @@ export async function apiFetch<T>(path: string, options: RequestOptions = {}): P
 export { clearTokens, setTokens, setCachedUser, setAccessToken };
 
 /** Convenience for mutations that return void/204. */
-export const apiPost = <T = unknown>(path: string, body?: unknown) =>
-  apiFetch<T>(path, { method: 'POST', body });
-export const apiPatch = <T = unknown>(path: string, body?: unknown) =>
-  apiFetch<T>(path, { method: 'PATCH', body });
-export const apiDelete = <T = unknown>(path: string) => apiFetch<T>(path, { method: 'DELETE' });
-export const apiGet = <T = unknown>(path: string) => apiFetch<T>(path, { method: 'GET' });
+export const apiPost = <T = unknown>(path: string, body?: unknown, options?: RequestOptions) =>
+  apiFetch<T>(path, { ...options, method: 'POST', body });
+export const apiPatch = <T = unknown>(path: string, body?: unknown, options?: RequestOptions) =>
+  apiFetch<T>(path, { ...options, method: 'PATCH', body });
+export const apiDelete = <T = unknown>(path: string, options?: RequestOptions) =>
+  apiFetch<T>(path, { ...options, method: 'DELETE' });
+export const apiGet = <T = unknown>(path: string, options?: RequestOptions) =>
+  apiFetch<T>(path, { ...options, method: 'GET' });

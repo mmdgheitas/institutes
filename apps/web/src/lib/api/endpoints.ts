@@ -76,7 +76,7 @@ export const auth = {
   refresh: (refreshToken: string) => apiPost<AuthResponse>('/auth/refresh', { refreshToken }),
   logout: (refreshToken: string) => apiPost('/auth/logout', { refreshToken }),
   logoutAll: () => apiPost('/auth/logout-all'),
-  me: () => apiGet<SessionUser>('/auth/me'),
+  me: (options?: { signal?: AbortSignal }) => apiGet<SessionUser>('/auth/me', options),
   updateMe: (body: { fullName?: string; email?: string; avatarUrl?: string }) =>
     apiPatch<SessionUser>('/auth/me', body),
 };

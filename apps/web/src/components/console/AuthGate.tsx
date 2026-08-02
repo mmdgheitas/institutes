@@ -27,13 +27,17 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
     let cancelled = false;
     (async () => {
       try {
-        const me = await auth.me();
+        // 8s cap so a down/unreachable API can never leave the console stuck
+        // on the loading screen — the cached session still lets the user in.
+        const me = await auth.me({ signal: AbortSignal.timeout(8000) });
         if (!cancelled) setUser(me);
       } catch (error) {
         if (!cancelled && error instanceof ApiError && !error.isUnauthorized) {
           // 5xx etc. — still let the cached user through rather than a hard loop.
           setUser(null);
         }
+        // NetworkError / timeout: keep the cached user; the API client will
+        // surface errors per-request once the user is in.
       } finally {
         if (!cancelled) setVerifying(false);
       }

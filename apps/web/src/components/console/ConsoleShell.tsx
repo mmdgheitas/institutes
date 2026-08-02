@@ -1,8 +1,9 @@
 'use client';
 
-import {useMemo, useState} from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
 import {
   LayoutDashboard,
   Building2,
@@ -25,6 +26,8 @@ import {
 } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useSession } from '@/stores/session';
+import { useActiveInstitute } from '@/stores/activeInstitute';
+import { institutes as institutesApi } from '@/lib/api/endpoints';
 import { InstituteSwitcher } from './InstituteSwitcher';
 import { NotificationBell } from './NotificationBell';
 import { ProfileMenu } from './ProfileMenu';
@@ -40,7 +43,7 @@ export interface NavItem {
 }
 
 export const NAV_ITEMS: NavItem[] = [
-  { href: '/', label: 'داشبورد', icon: <LayoutDashboard className="h-5 w-5" /> },
+  { href: '/dashboard', label: 'داشبورد', icon: <LayoutDashboard className="h-5 w-5" /> },
   {
     href: '/institutes',
     label: 'مؤسسات',
@@ -76,7 +79,22 @@ export const NAV_ITEMS: NavItem[] = [
 export function ConsoleShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { user } = useSession();
+  const { instituteId, setInstituteId } = useActiveInstitute();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Load the admin's institutes once; auto-select the first one so the
+  // dashboard and every scoped page have a working institute immediately.
+  const { data: myInstitutes } = useQuery({
+    queryKey: ['institutes', 'mine'],
+    queryFn: () => institutesApi.mine(),
+    enabled: user?.role === 'INSTITUTE_ADMIN',
+  });
+
+  useEffect(() => {
+    if (user?.role === 'INSTITUTE_ADMIN' && myInstitutes && myInstitutes.length > 0 && !instituteId) {
+      setInstituteId(myInstitutes[0].id);
+    }
+  }, [user?.role, myInstitutes, instituteId, setInstituteId]);
 
   const visibleItems = useMemo(() => {
     if (!user) return [];
@@ -90,6 +108,9 @@ export function ConsoleShell({ children }: { children: React.ReactNode }) {
     if (href === '/') return pathname === '/';
     return pathname === href || pathname.startsWith(`${href}/`);
   };
+  // Dashboard is the entry point after login (the root path redirects there),
+  // so it must highlight when the sidebar's active page is the dashboard.
+  const isDashboard = pathname === '/' || pathname === '/dashboard';
 
   const sidebar = (
     <div className="flex h-full flex-col">
@@ -111,7 +132,7 @@ export function ConsoleShell({ children }: { children: React.ReactNode }) {
             onClick={() => setSidebarOpen(false)}
             className={clsx(
               'flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium transition-colors',
-              active(item.href)
+              (item.href === '/dashboard' ? isDashboard : active(item.href))
                 ? 'bg-primary-600 text-white shadow-sm'
                 : 'text-slate-300 hover:bg-slate-800 hover:text-white',
             )}
