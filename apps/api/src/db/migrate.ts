@@ -13,10 +13,11 @@ import { createHash } from 'node:crypto';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { Client } from 'pg';
+import 'dotenv/config';
 
 const MIGRATIONS_DIR = join(__dirname, '..', '..', 'migrations');
 const DATABASE_URL =
-  // process.env.DATABASE_URL ??
+  process.env.DATABASE_URL ??
   'postgresql://institutes:institutes@localhost:5433/institutes';
 
 interface MigrationFile {
@@ -132,6 +133,7 @@ async function reset(client: Client): Promise<void> {
 async function main(): Promise<void> {
   const command = process.argv[2] ?? 'up';
   const client = new Client({ connectionString: DATABASE_URL });
+  console.log(`Connecting to database at ${DATABASE_URL} ...`);
   await client.connect();
   try {
     if (command === 'up') await up(client);

@@ -30,10 +30,11 @@ import {
   INSTRUCTORS,
   REVIEW_TEXTS,
 } from './seed-data';
+import 'dotenv/config';
 
 const DATABASE_URL =
-  // process.env.DATABASE_URL ??
-  'postgresql://postgres:1234@localhost:5433/institutes';
+  process.env.DATABASE_URL ??
+  'postgresql://institutes:institutes@localhost:5433/institutes';
 
 /** bcrypt rounds — lowered for seeding so it does not take a minute. */
 const BCRYPT_ROUNDS = 10;

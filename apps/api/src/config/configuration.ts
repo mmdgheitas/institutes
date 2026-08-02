@@ -75,8 +75,8 @@ export default (): AppConfig => ({
 
   database: {
     url:
-      // process.env.DATABASE_URL ??
-      'postgresql://postgres:1234@localhost:5433/institutes',
+      process.env.DATABASE_URL ??
+      'postgresql://institutes:institutes@localhost:5433/institutes',
     poolMax: int(process.env.DATABASE_POOL_MAX, 10),
     ssl: bool(process.env.DATABASE_SSL, false),
     statementTimeoutMs: int(process.env.DATABASE_STATEMENT_TIMEOUT_MS, 15_000),
